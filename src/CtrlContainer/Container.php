@@ -12,7 +12,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use OpenCore\Utils\JsonUtils;
 use OpenCore\Services\Injector;
 use OpenCore\Rest\RestResponseWrap;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 class Container implements ContainerInterface {
 
@@ -30,7 +30,7 @@ class Container implements ContainerInterface {
     private $defaultContentType = null;
     
     /**
-     * @var Logger 
+     * @var LoggerInterface 
      */
     private $logger=null;
 

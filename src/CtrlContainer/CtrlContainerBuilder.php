@@ -4,6 +4,7 @@ namespace OpenCore\CtrlContainer;
 
 use Psr\Container\ContainerInterface;
 use Closure;
+use Psr\Log\LoggerInterface;
 
 class CtrlContainerBuilder {
 
@@ -15,11 +16,15 @@ class CtrlContainerBuilder {
     public function useNamespace($ns) {
         $this->options['ns'] = $ns;
     }
-
+    
+    public function useLogger(LoggerInterface $logger){
+        $this->options['logger']=$logger;
+    }
+    
     public function useServicesContainer(ContainerInterface $servicesContainer) {
         $this->options['servicesContainer'] = $servicesContainer;
     }
-    
+
     public function useTextContentType() {
         $this->options['defaultContentType'] = 'text';
     }
