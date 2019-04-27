@@ -12,6 +12,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use OpenCore\Utils\JsonUtils;
 use OpenCore\Services\Injector;
 use OpenCore\Rest\RestResponseWrap;
+use Monolog\Logger;
 
 class Container implements ContainerInterface {
 
@@ -27,6 +28,11 @@ class Container implements ContainerInterface {
     private $transationMethods = null;
     private $transationCallback = null;
     private $defaultContentType = null;
+    
+    /**
+     * @var Logger 
+     */
+    private $logger=null;
 
     public function __construct(array $options) {
         $this->ns = isset($options['ns']) ? $options['ns'] : '';
@@ -37,6 +43,9 @@ class Container implements ContainerInterface {
         if (isset($options['transation'])) {
             $this->transationMethods = $options['transation']['methods'];
             $this->transationCallback = $options['transation']['callback'];
+        }
+        if(isset($options['logger'])){
+            $this->logger=$options['logger'];
         }
     }
 
@@ -52,7 +61,7 @@ class Container implements ContainerInterface {
             return $this->handleRequest($ctrlInstance, $ctrlMethod, $request, $this->servicesContainer->get('response'));
         };
     }
-
+    
     private function handleRequest($ctrl, $ctrlMethod, ServerRequestInterface $request, ResponseInterface $response) {
         $resBody = null;
         try {
@@ -112,6 +121,11 @@ class Container implements ContainerInterface {
         } catch (Exception $ex) {
             $response = $response->withStatus(RestError::HTTP_INTERNAL_SERVER_ERROR);
             $resBody = ['message' => 'Unexpected error'];
+            if($this->logger){
+                try{
+                    $this->logger->error($ex);
+                } catch (Exception $ex) {}
+            }
         }
         $contentType=$this->defaultContentType;
         if($contentType==='json'){
