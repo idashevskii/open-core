@@ -12,7 +12,7 @@ class JsonSerializer {
     public function serialize($object) {
         return json_encode($this->serializeToAssoc($object), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
-    
+
     public function serializeToAssoc($object) {
         if (is_array($object)) {
             $result = $this->serializeArray($object);
@@ -23,7 +23,7 @@ class JsonSerializer {
         }
         return $result;
     }
-    
+
     private function getClassPropertyGetters($object) {
         $className = get_class($object);
         if (!isset($this->classPropertyGetters[$className])) {
@@ -37,7 +37,7 @@ class JsonSerializer {
                 if ($property->isPublic()) {
                     $properties[] = $name;
                 } else {
-                    $getter = 'get'.ucfirst($name);
+                    $getter = 'get' . ucfirst($name);
                     if ($reflector->hasMethod($getter)) {
                         $getters[$name] = $getter;
                     }
@@ -47,7 +47,7 @@ class JsonSerializer {
         }
         return $this->classPropertyGetters[$className];
     }
-    
+
     private function serializeObject($object) {
         $properties = $this->getClassPropertyGetters($object);
         $data = array();
@@ -59,7 +59,7 @@ class JsonSerializer {
         }
         return $data;
     }
-    
+
     private function serializeArray($array) {
         $result = array();
         foreach ($array as $key => $value) {

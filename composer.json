@@ -6,9 +6,8 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Ilya Dashevskii",
-            "email": "idashevskii@yandex.com",
-            "homepage": "http://edevelop.ru"
+            "name": "Ilya Dashevsky",
+            "email": "il.dashevsky@gmail.com"
         }
     ],
     "require": {

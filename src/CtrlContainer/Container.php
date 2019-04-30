@@ -28,11 +28,11 @@ class Container implements ContainerInterface {
     private $transationMethods = null;
     private $transationCallback = null;
     private $defaultContentType = null;
-    
+
     /**
      * @var LoggerInterface 
      */
-    private $logger=null;
+    private $logger = null;
 
     public function __construct(array $options) {
         $this->ns = isset($options['ns']) ? $options['ns'] : '';
@@ -44,8 +44,8 @@ class Container implements ContainerInterface {
             $this->transationMethods = $options['transation']['methods'];
             $this->transationCallback = $options['transation']['callback'];
         }
-        if(isset($options['logger'])){
-            $this->logger=$options['logger'];
+        if (isset($options['logger'])) {
+            $this->logger = $options['logger'];
         }
     }
 
@@ -61,7 +61,7 @@ class Container implements ContainerInterface {
             return $this->handleRequest($ctrlInstance, $ctrlMethod, $request, $this->servicesContainer->get('response'));
         };
     }
-    
+
     private function handleRequest($ctrl, $ctrlMethod, ServerRequestInterface $request, ResponseInterface $response) {
         $resBody = null;
         try {
@@ -121,19 +121,21 @@ class Container implements ContainerInterface {
         } catch (Exception $ex) {
             $response = $response->withStatus(RestError::HTTP_INTERNAL_SERVER_ERROR);
             $resBody = ['message' => 'Unexpected error'];
-            if($this->logger){
-                try{
+            if ($this->logger) {
+                try {
                     $this->logger->error($ex);
-                } catch (Exception $ex) {}
+                } catch (Exception $ex) {
+                    
+                }
             }
         }
-        $contentType=$this->defaultContentType;
-        if($contentType==='json'){
+        $contentType = $this->defaultContentType;
+        if ($contentType === 'json') {
             if ($resBody !== null) {
                 $response->getBody()->write(JsonUtils::mapObjectToJson($resBody));
             }
             $response = $response->withHeader('Content-Type', 'application/json');
-        }else if($contentType==='text'){
+        } else if ($contentType === 'text') {
             $response->getBody()->write(is_array($resBody) ? reset($resBody) : $resBody);
             $response = $response->withHeader('Content-Type', 'text/html');
         }
