@@ -8,9 +8,17 @@ use PHPMailer\PHPMailer\Exception;
 class Mailer {
 
     public static function sendTextMail($to, string $subject, string $body) {
+        self::genericSendMail($to, $subject, $body, false);
+    }
+    
+    public static function sendHtmlMail($to, string $subject, string $body) {
+        self::genericSendMail($to, $subject, $body, true);
+    }
+    
+    private static function genericSendMail($to, string $subject, string $body, bool $isHtmlTemplate) {
         switch (getenv('EMAIL_METHOD')) {
-            case 'STMP': return self::sendUsingSmtp($to, $subject, $body);
-            case 'LOG': return self::sendUsingLog($to, $subject, $body);
+            case 'STMP': return self::sendUsingSmtp($to, $subject, $body, $isHtmlTemplate);
+            case 'LOG': return self::sendUsingLog($to, $subject, $body, $isHtmlTemplate);
         }
     }
 
@@ -32,8 +40,12 @@ class Mailer {
     private static function mailLogFileName() {
         return APP_ROOT . '/logs/mail.log';
     }
-
-    private static function sendUsingLog($to, string $subject, string $body) {
+    
+    private static function makeAltBody(string $htmlBody){
+        return strip_tags($htmlBody, '<a>');
+    }
+    
+    private static function sendUsingLog($to, string $subject, string $body, bool $isHtmlTemplate) {
         $MAX_LOG_SIZE = 16;
 
         $filename = self::mailLogFileName();
@@ -43,7 +55,7 @@ class Mailer {
         $size = filesize($filename);
         $data = $size ? json_decode(fread($handle, $size), true) : [];
 
-        $data[] = ['to' => $to, 'subject' => $subject, 'body' => $body];
+        $data[] = ['to' => $to, 'subject' => $subject, 'body' => $body, 'alt' => $isHtmlTemplate ? self::makeAltBody($body) : null];
 
         if (count($data) > $MAX_LOG_SIZE) {
             array_shift($data);
@@ -57,7 +69,7 @@ class Mailer {
         fclose($handle);
     }
 
-    private static function sendUsingSmtp($to, string $subject, string $body) {
+    private static function sendUsingSmtp($to, string $subject, string $body, bool $isHtmlTemplate) {
 
         $mail = new PHPMailer(true);
         try {
@@ -80,11 +92,13 @@ class Mailer {
                 $mail->addAddress($toItem);
             }
 
-            $mail->isHTML(false);
+            $mail->isHTML($isHtmlTemplate);
             $mail->Subject = $subject;
             $mail->Body = $body;
-            //$mail->AltBody = '';
-
+            if($isHtmlTemplate){
+                $mail->AltBody = self::makeAltBody($body);
+            }
+            
             $mail->send();
         } catch (Exception $e) {
             throw new MailerException('Mailer Error (' . $e->getMessage() . '): ' . $mail->ErrorInfo);
