@@ -15,12 +15,14 @@ class LocaleMiddleware implements MiddlewareInterface {
     private static $localeAttribute = 'locale';
     private static $langAttribute = 'lang';
     private $settingsCallback;
+    private $afterDetectedCallback;
 
     /**
      * Set the Dispatcher instance.
      */
-    public function __construct(Closure $settings) {
-        $this->settingsCallback = $settings;
+    public function __construct(Closure $settingsCallback, Closure $afterDetectedCallback=null) {
+        $this->settingsCallback = $settingsCallback;
+        $this->afterDetectedCallback = $afterDetectedCallback;
     }
 
     /**
@@ -56,7 +58,11 @@ class LocaleMiddleware implements MiddlewareInterface {
             $lang = $settings['defaultLang'];
         }
         //die($locale.', '.$lang);
-
+        
+        if($this->afterDetectedCallback){
+            ($this->afterDetectedCallback)($locale, $lang);
+        }
+        
         return $handler->handle($request
                                 ->withAttribute(self::$localeAttribute, $locale)
                                 ->withAttribute(self::$langAttribute, $lang));
