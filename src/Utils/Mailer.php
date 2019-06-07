@@ -29,7 +29,9 @@ class Mailer {
             $handle = fopen($filename, 'r');
             flock($handle, LOCK_SH);
 
-            $ret = json_decode(fread($handle, filesize($filename)), true);
+            $size = filesize($filename);
+        
+            $ret = $size ? json_decode(fread($handle, $size), true) : [];
 
             flock($handle, LOCK_UN);
             fclose($handle);
@@ -65,6 +67,8 @@ class Mailer {
         fseek($handle, 0);
         fwrite($handle, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
 
+        clearstatcache(true, $filename);
+        
         flock($handle, LOCK_UN);
         fclose($handle);
     }
