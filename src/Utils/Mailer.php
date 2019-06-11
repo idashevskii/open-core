@@ -6,7 +6,9 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 class Mailer {
-
+    
+    public static $MAX_LOG_SIZE = 16;
+    
     public static function sendTextMail($to, string $subject, string $body) {
         self::genericSendMail($to, $subject, $body, false);
     }
@@ -48,8 +50,7 @@ class Mailer {
     }
     
     private static function sendUsingLog($to, string $subject, string $body, bool $isHtmlTemplate) {
-        $MAX_LOG_SIZE = 16;
-
+        
         $filename = self::mailLogFileName();
         $handle = fopen($filename, 'c+');
         flock($handle, LOCK_EX);
@@ -57,9 +58,15 @@ class Mailer {
         $size = filesize($filename);
         $data = $size ? json_decode(fread($handle, $size), true) : [];
 
-        $data[] = ['to' => $to, 'subject' => $subject, 'body' => $body, 'alt' => $isHtmlTemplate ? self::makeAltBody($body) : null];
+        $data[] = [
+            'to' => $to,
+            'subject' => $subject,
+            'body' => $body,
+            'alt' => $isHtmlTemplate ? self::makeAltBody($body) : null,
+            'time' => time(),
+        ];
 
-        if (count($data) > $MAX_LOG_SIZE) {
+        if (count($data) > self::$MAX_LOG_SIZE) {
             array_shift($data);
         }
 
