@@ -91,7 +91,7 @@ class Container implements ContainerInterface {
                         $val = $queryParams[$paramName];
                     }
                     if ($val !== null) {
-                        switch ($reflParam->getType()) {
+                        switch ($reflParam->getType()->getName()) {
                             case 'bool': $val = ($val === 'true');
                                 break;
                             case 'int': $val = (int) $val;
