@@ -11,12 +11,12 @@
         }
     ],
     "require": {
-        "php": "7.2.*",
+        "php": "^8.0",
         "php-di/php-di": "^6.0",
         "relay/relay": "2.x@dev",
-        "zendframework/zend-diactoros": "^1.7",
-        "middlewares/fast-route": "^1.0",
-        "middlewares/request-handler": "^1.1",
+        "laminas/laminas-diactoros": "^2.2",
+        "middlewares/fast-route": "^2.0",
+        "middlewares/request-handler": "^2.0",
         "netresearch/jsonmapper": "^1.4",
         "vlucas/spot2": "^2.2",
         "monolog/monolog": "^1.23",
