@@ -9,7 +9,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Closure;
-use Zend\Diactoros\Response;
+use Laminas\Diactoros\Response;
 use Monolog\Logger;
 use OpenCore\Rest\RestError;
 

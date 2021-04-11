@@ -14,14 +14,15 @@
         "php": "^8.0",
         "php-di/php-di": "^6.0",
         "relay/relay": "2.x@dev",
-        "laminas/laminas-diactoros": "^2.2",
         "middlewares/fast-route": "^2.0",
         "middlewares/request-handler": "^2.0",
         "netresearch/jsonmapper": "^1.4",
         "vlucas/spot2": "^2.2",
         "monolog/monolog": "^1.23",
         "ramsey/uuid": "^3.8",
-        "phpmailer/phpmailer": "^6.0"
+        "phpmailer/phpmailer": "^6.0",
+        "laminas/laminas-httphandlerrunner": "^1.4",
+        "laminas/laminas-diactoros": "^2.5"
     },
     "autoload": {
         "psr-4": {

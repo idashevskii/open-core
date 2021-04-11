@@ -78,7 +78,7 @@ class Container implements ContainerInterface {
                 /* @var $reflParam ReflectionParameter */
                 $paramName = $reflParam->getName();
 
-                $paramClass = $paramClass->hasType() && !$reflParam->getType()->isBuiltin() 
+                $paramClass = $reflParam->hasType() && !$reflParam->getType()->isBuiltin() 
                   ? new ReflectionClass($reflParam->getType()->getName())
                   : null;
 
