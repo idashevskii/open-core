@@ -77,7 +77,11 @@ class Container implements ContainerInterface {
             foreach ($reflParams as $reflParam) {
                 /* @var $reflParam ReflectionParameter */
                 $paramName = $reflParam->getName();
-                $paramClass = $reflParam->hasType() ? $reflParam->getClass() : null;
+
+                $paramClass = $paramClass->hasType() && !$reflParam->getType()->isBuiltin() 
+                  ? new ReflectionClass($reflParam->getType()->getName())
+                  : null;
+
                 $paramClassName = $paramClass ? $paramClass->getName() : null;
                 if ($paramClassName === ServerRequestInterface::class) {
                     $args[] = $request;

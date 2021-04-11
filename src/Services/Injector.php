@@ -19,7 +19,7 @@ class Injector {
         $ret = [];
         foreach ($parameters as $param) {
             /* @var $param ReflectionParameter */
-            $className = $param->getClass()->getName();
+            $className = $param->getType()->getName();
             if (!$this->container->has($className)) {
                 throw new InvalidArgumentException('DI: Service ' . $className . ' not found for ' . $paramOwner);
             }
